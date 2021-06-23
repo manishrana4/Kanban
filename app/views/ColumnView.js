@@ -13,7 +13,7 @@ var ColumnView = Marionette.View.extend({
   },
   template: template,
   childViewOptions: function (model, index) {
-    console.log("column model column Container", model);
+    // console.log("column model column Container", model);
     return {
       parentModel: this.model,
     };
@@ -28,12 +28,12 @@ var ColumnView = Marionette.View.extend({
     });
 
     thisColumnsTasksArray.forEach((task) => {
-      console.log("task:", task);
+      // console.log("task:", task);
       thisColumnsTasks.add(new TaskModel({ ...task.toJSON() }));
     });
 
-    console.log("thisColumnsTasks", thisColumnsTasks);
-    console.log("variables.columnsCollection", variables.columnsCollection);
+    // console.log("thisColumnsTasks", thisColumnsTasks);
+    // console.log("variables.columnsCollection", variables.columnsCollection);
 
     this.showChildView(
       "taskContainer",
