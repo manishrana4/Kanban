@@ -1,0 +1,41 @@
+{
+  "name": "simple-kanban-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:sass": "node-sass --output-style compressed public/sass/main.scss -o public/css",
+    "watch:sass": "node-sass -w --output-style compressed public/sass/main.scss -o public/css",
+    "start": "npx webpack-dev-server",
+    "babel": "babel --presets es2015 app/index.js -o build/index.bundle.js",
+    "webpack": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manishrana4/Simple-KanBan-App.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/manishrana4/Simple-KanBan-App/issues"
+  },
+  "homepage": "https://github.com/manishrana4/Simple-KanBan-App#readme",
+  "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/preset-env": "^7.14.5",
+    "@babel/register": "^7.14.5",
+    "babel-loader": "^8.2.2",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {
+    "backbone": "^1.4.0",
+    "backbone.marionette": "^4.1.2",
+    "jquery": "^3.6.0",
+    "node-sass": "^6.0.0",
+    "underscore": "^1.13.1",
+    "underscore-template-loader": "^1.1.0"
+  }
+}

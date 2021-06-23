@@ -1,0 +1,85 @@
+.kanban-card {
+  width: 15em;
+  // background-color: #fff;
+  //   background-color: $background-lighterDark;
+  min-height: 5em;
+
+  &__header {
+    @include displayFlex($justifyContent: space-between);
+    background-color: $background-primary-light;
+    color: $text-light;
+    padding: 0.5em 1em;
+    border-radius: 5px 5px 0px 0px;
+    &__title {
+      font-size: $font-m;
+    }
+  }
+
+  &__body {
+    background-color: $background-primary-lighter;
+    padding: 0.6em 1em;
+    border-radius: 0px 0px 5px 5px;
+
+    &__task {
+      background-color: $background-light;
+      margin: 0.5em 0em;
+      padding: 0.5em 0.7em;
+      border-radius: 3px;
+      @include displayFlex();
+        
+      &:hover{
+          background-color: $background-primary-lighter-hover;
+
+          .kanban-card__body__task__option{
+              visibility: visible;
+          }
+      }
+
+      &--add{
+          background-color: transparent;
+          font-weight: 400;
+          font-size: $font-xxs;
+          color: $text-primary;
+          display: block;
+          &>*{
+              padding: 0px 2px;
+          }
+          &:hover{
+              background-color: #d9dbff;
+          }
+      }
+      &__title{
+          font-size: $font-xs;
+          color:$text-primary;
+          width: 90%;
+          word-break: break-word;
+      }
+      &__title-input{
+        width: 100%;
+        // input{
+        //   border: none;
+        //   border-bottom: 2px solid ;
+        //   border-bottom-color:$background-primary-light ;
+        //   outline: none;
+        // }
+        &__field{
+          border: none;
+          border-bottom: 2px solid ;
+          border-bottom-color:$background-primary-light ;
+          outline: none;
+          resize: none; 
+          overflow: hidden;
+          min-height: 1em;
+          
+        }
+      }
+      &__option{
+        //   display: hidden;
+        visibility: hidden;
+        width: 10%;
+        text-align: center;
+        transform: visibility 2s;
+      }
+    }
+  }
+}
