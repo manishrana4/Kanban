@@ -1,14 +1,14 @@
 import Marionette from "backbone.marionette";        
 import $ from "jquery"; 
 
-import template from '../templates/task.html';
+import template from '../templates/taskItem.html';
 
 
-var TaskItemView = Marionette.CollectionView.extend({
-  childView:TaskItemView,
+var TaskItemView = Marionette.View.extend({
+  // childView:TaskItemView,
   template: template,
   initialize(){
-      console.log("hello form task continer");
+      console.log("hello form task item continer");
   },
   onrender(){
     console.log("this on task container", this);
