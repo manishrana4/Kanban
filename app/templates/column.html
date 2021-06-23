@@ -1,4 +1,31 @@
 <div class="kanban-card">
- <%= name %>
- <div class="task"></div>
+  <div class="kanban-card__header">
+    <span class="kanban-card__header__title">
+      COLUMN TITLE: <%= name %>
+      <!-- on click shows an input area with the title editable -->
+    </span>
+    <span class="kanban-card__header__options">
+      <i class="fas fa-ellipsis-h"></i>
+      <!-- on click options -->
+      <!-- remove , edit , cancel and add -->
+    </span>
+  </div>
+  <div class="kanban-card__body">
+      <!-- here goes the single tasks of the column -->
+  </div>
+  <div>
+
+    <!-- lets add the add another card section here -->
+    <!-- add another card section -->
+    <div class="kanban-card__body__task kanban-card__body__task--add">
+      <!-- <div class="kanban-card__body__task__add"> -->
+      <span class="kanban-card__body__task--add__icon"
+        ><i class="fas fa-plus"></i
+      ></span>
+      <span class="kanban-card__body__task--add__text">Add another card</span>
+      <!-- </div> -->
+    </div>
+    <!-- add another card section -->
+  </div>
 </div>
+<br /><br />

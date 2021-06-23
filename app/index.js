@@ -25,7 +25,8 @@ variables.columnsCollection.fetch({
     variables.tasksCollection.fetch({
       success:()=>{
           // console.log("tasks loaded successfully");
-          // console.log("task collection", variables.tasksCollection);
+          console.log("task collection", variables.tasksCollection);
+          console.log("columnsCollection", variables.columnsCollection);
           app.start({
             columns: variables.columnsCollection
          });
