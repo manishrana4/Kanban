@@ -13,7 +13,6 @@ var TaskContainer = Marionette.CollectionView.extend({
       // console.log("hello form task continer");
   },
   onrender(){
-    
   }
 });
 
