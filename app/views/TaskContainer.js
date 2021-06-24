@@ -7,10 +7,10 @@ import template from '../templates/task.html';
 
 var TaskContainer = Marionette.CollectionView.extend({
   childView:TaskItemView,
-  childViewContainer:'.task',
-  template: template,
+  // childViewContainer:'.task',
+  // template: template,
   initialize(){
-      console.log("hello form task continer");
+      // console.log("hello form task continer");
   },
   onrender(){
     
