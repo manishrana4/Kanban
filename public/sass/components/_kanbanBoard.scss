@@ -1,5 +1,8 @@
+
 .board-container{
-    margin-top: 1em;
-    margin-top: 1em;
+    margin-top: 5em;
     padding: 1em 1.5em;
+    min-height: 80vh;
+    overflow-x: auto;
+    display: inline-flex;
 }

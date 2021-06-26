@@ -1,8 +1,9 @@
 .kanban-card {
   width: 15em;
-  // background-color: #fff;
-  //   background-color: $background-lighterDark;
+  
+  //background-color: $background-lighterDark;
   min-height: 5em;
+  margin: 1em;
 
   &__header {
     @include displayFlex($justifyContent: space-between);
