@@ -8,6 +8,7 @@ import $ from "jquery";
 import template from "../templates/column.html";
 
 var ColumnView = Marionette.View.extend({
+  className:"kanban-card",
   regions: {
     taskContainer: ".kanban-card__body",
   },

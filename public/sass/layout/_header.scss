@@ -1,12 +1,15 @@
 // -----------------------------------------------------------------------------
 // This file contains all styles related to the header of the site/application.
 // -----------------------------------------------------------------------------
-header{
-    margin-bottom: 1em;
+header {
+  margin-bottom: 1em;
+  position: fixed;
+  left: 0;
+  right: 0;
 }
 
-.main-header{
-    text-align: center;
-    font-size: $font-xl;
-    color: rgb(138, 138, 138);
+.main-header {
+  text-align: center;
+  font-size: $font-xl;
+  color: rgb(138, 138, 138);
 }
