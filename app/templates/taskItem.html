@@ -1,16 +1,13 @@
 <div class="kanban-card__body__task">
-    <span class="kanban-card__body__task__title"> 
-        <%= name %>
-    </span>
-    <span class="kanban-card__body__task__title-input hide">
-      <!-- <input type="text" class="kanban-card__body__task__title-input__field"/> -->
-      <textarea
-        type="text"
-        class="kanban-card__body__task__title-input__field"
-      ></textarea>
-    </span>
-    <span class="kanban-card__body__task__option">
-      <!-- delete option on hover after task is added -->
-      <i class="fas fa-times"></i>
-    </span>
-  </div>
+  <span class="kanban-card__body__task__title"> <%= name %> </span>
+  <span class="kanban-card__body__task__title-input hide">
+    <textarea
+      type="text"
+      class="kanban-card__body__task__title-input__field"
+      autofocus
+    ></textarea>
+  </span>
+  <span class="kanban-card__body__task__option">
+    <i class="fas fa-times"></i>
+  </span>
+</div>

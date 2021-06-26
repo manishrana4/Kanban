@@ -12,13 +12,14 @@ var ColumnView = Marionette.View.extend({
     taskContainer: ".kanban-card__body",
   },
   template: template,
-  childViewOptions: function (model, index) {
-    // console.log("column model column Container", model);
-    return {
-      parentModel: this.model,
-    };
-  },
+  // childViewOptions: function (model, index) {
+  //     return {
+  //     parentModel: this.model,
+  //   };
+  // },
   onRender() {
+
+    console.log("COLUMN VIEW RENDERED")
     let thisModel = this.model;
 
     let thisColumnsTasks = new TasksCollection();
@@ -28,21 +29,16 @@ var ColumnView = Marionette.View.extend({
     });
 
     thisColumnsTasksArray.forEach((task) => {
-      // console.log("task:", task);
       thisColumnsTasks.add(new TaskModel({ ...task.toJSON() }));
     });
-
-    // console.log("thisColumnsTasks", thisColumnsTasks);
-    // console.log("variables.columnsCollection", variables.columnsCollection);
-
+    // collection.reset on some event or re-render the colleciton on model add to collection
     this.showChildView(
       "taskContainer",
       new TaskContainer({
         collection: thisColumnsTasks,
+        colId:this.model.id
       })
     );
-    // add task button here
-    // this.showChildView("addTask", new AddTaskContainer());
   },
 });
 
