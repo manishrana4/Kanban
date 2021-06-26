@@ -12,14 +12,17 @@ var ColumnView = Marionette.View.extend({
     taskContainer: ".kanban-card__body",
   },
   template: template,
-  // childViewOptions: function (model, index) {
-  //     return {
-  //     parentModel: this.model,
-  //   };
-  // },
+
+  childViewEvents: {
+    'task:destroyed': 'reRenderView'
+  },
+  reRenderView(){
+    // console.log("!!!!!this.reRenderView!!!!!");
+    this.render(); 
+  },
   onRender() {
 
-    console.log("COLUMN VIEW RENDERED")
+    // console.log("COLUMN VIEW RENDERED")
     let thisModel = this.model;
 
     let thisColumnsTasks = new TasksCollection();
@@ -31,7 +34,7 @@ var ColumnView = Marionette.View.extend({
     thisColumnsTasksArray.forEach((task) => {
       thisColumnsTasks.add(new TaskModel({ ...task.toJSON() }));
     });
-    // collection.reset on some event or re-render the colleciton on model add to collection
+    
     this.showChildView(
       "taskContainer",
       new TaskContainer({

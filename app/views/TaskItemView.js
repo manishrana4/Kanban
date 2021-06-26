@@ -67,17 +67,14 @@ var TaskItemView = Marionette.View.extend({
 
     if (this.model) {
       // this.model.colId=
-      console.log("!!!!!task saved with new title value :", taskTitle);
       this.model.save(
         {},
         {
           success: () => {
-            console.log(
-              "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!task saved with new title value :",
-              taskTitle
-            );
+            console.log("!!!!task saved with new title value!!!!:", taskTitle);
             // on success make the change in task collection and rerender Task Collection
             variables.tasksCollection.push(this.model);
+            // re render the parent
           },
         }
       );
