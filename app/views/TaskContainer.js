@@ -2,27 +2,13 @@ import Marionette from "backbone.marionette";
 import TaskItemView from "./TaskItemView";
 import AddItemView from "./AddItemView";
 import TaskModel from "../models/task";
-import $ from "jquery";
-
 import template from "../templates/task.html";
 import TimeStamp from "../services/timeStamp";
+import variables from "../services/variables";
+import $ from "jquery";
 
 var TaskContainer = Marionette.CollectionView.extend({
   childView: TaskItemView,
-  // childViewContainer:'.task',
-  // template: template,
-  // childViewOptions:{
-  //   inputFocus:false,
-  // },
-  onChildViewFooEvent(childView, model) {
-    console.log("childView, model onChildViewFooEvent", childView, model);
-    // NOTE: we must wait for the server to confirm
-    // the destroy PRIOR to removing it from the collection
-    model.destroy({ wait: true });
-
-    // but go ahead and remove it visually
-    this.removeChildView(childView);
-  },
   childViewTriggers: {
     "destroy:empty": "destroy:empty:child:view",
   },
@@ -33,21 +19,29 @@ var TaskContainer = Marionette.CollectionView.extend({
   childViewEvents: {
     "add:task": "addNewTask", // add new html
     "destroy:task": "removeView",
-    // "destroy:empty":"removeView",
-    // This callback will be called whenever a child is rendered or emits a `render` event
     render() {
       console.log("A child view has been rendered.");
     },
   },
   removeView(childView) {
     // check if the input is empty
-    console.log("from removeChildView");
-    console.log("childView to be removed", childView, childView.model.id);
-
+    // console.log("from removeChildView");
+    // console.log("childView to be removed", childView, childView.model.id);
+    let childViewModel = childView.model;
     childView.model.destroy({
       success: () => {
-        console.log("task removed");
-        this.removeChildView(childView);
+        console.log("task removed  childView.model", childView.model);
+        console.log("task removed  childViewModel", childViewModel);
+        console.log("this.children.length on remove", this.children.length);
+
+        variables.tasksCollection.remove(childViewModel); // remove model from local taskCollection
+        this.removeChildView(childView); // removes the childView
+        
+        // this.render();
+        // call the column view with updated collection
+
+        this.trigger("task:destroyed");
+        // to re-renders the column View for tasks remainng
       },
       error: function () {
         console.log("error removing task");
@@ -74,15 +68,9 @@ var TaskContainer = Marionette.CollectionView.extend({
     // console.log("hello form task continer");
   },
   onRender() {
-    console.log("this in Task Container", this);
-    console.log("!!!TASK CONTAINER RENDERED");
-
-    console.log(
-      "!!!!!!!!!!!!!!!!!! this.children.length on ADD ITEM",
-      this.children.length
-    );
     let addItemView = new AddItemView();
     this.addChildView(addItemView, this.children.length);
+    console.log("Task Container onRender");
     // add child on adding a task
   },
 });
