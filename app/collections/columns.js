@@ -1,5 +1,5 @@
 import Backbone from 'backbone';
-import columnModel from '../models/task';
+import columnModel from '../models/column';
 
 var ColumnsCollection= Backbone.Collection.extend({
     model:columnModel,

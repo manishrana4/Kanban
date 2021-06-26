@@ -1,5 +1,5 @@
 import Marionette from "backbone.marionette";
-import MainContainer from "./views/MainContainer";
+import MainView from "./views/MainView";
 import variables from "./services/variables";
 import ColumnsCollection from "./collections/columns";
 import TasksCollection from "./collections/tasks";
@@ -11,10 +11,11 @@ variables.tasksCollection = new TasksCollection();
 const App = Marionette.Application.extend({
   onStart(app, options) {
     console.log("app started");
-    var mainContainer = new MainContainer({
-      collection:options.columns
-    });
-    mainContainer.render();
+    // var mainView = new MainView({
+    //   collection:options.columns
+    // });
+    var mainView = new MainView();
+    mainView.render();
   },
 });
 
@@ -27,9 +28,10 @@ variables.columnsCollection.fetch({
           // console.log("tasks loaded successfully");
           console.log("task collection", variables.tasksCollection);
           console.log("columnsCollection", variables.columnsCollection);
-          app.start({
-            columns: variables.columnsCollection
-         });
+        //   app.start({
+        //     columns: variables.columnsCollection
+        //  });
+        app.start();
       },
       error:(error)=>{
           console.log("error in r=tasks fetch", error);
