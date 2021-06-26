@@ -19,14 +19,16 @@ var TaskContainer = Marionette.CollectionView.extend({
   childViewEvents: {
     "add:task": "addNewTask", // add new html
     "destroy:task": "removeView",
+    "render:task": "renderTasks",
     render() {
       console.log("A child view has been rendered.");
     },
   },
+  renderTasks(){
+    this.trigger("render:task");
+  },
   removeView(childView) {
-    // check if the input is empty
-    // console.log("from removeChildView");
-    // console.log("childView to be removed", childView, childView.model.id);
+    
     let childViewModel = childView.model;
     childView.model.destroy({
       success: () => {

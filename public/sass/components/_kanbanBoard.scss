@@ -1,9 +1,32 @@
+.board-container {
+  margin-top: 5em;
+  // padding: 1em 1.5em;
+  padding: 1em 0em;
+  min-height: 80vh;
+  overflow-x: auto;
+  display: inline-flex;
+}
 
-.board-container{
-    margin-top: 5em;
-    // padding: 1em 1.5em;
-    padding: 1em 0em;
-    min-height: 80vh;
-    overflow-x: auto;
-    display: inline-flex;
+.column {
+  &__add {
+    // margin: 0.5em 0em;
+    // padding: 0.5em 0.7em;
+    border-radius: 3px;
+    // background-color: transparent;
+    background-color: $background-primary-lighter;
+    font-weight: 400;
+    font-size: $font-xxs;
+    color: $text-primary;
+    display: block;
+
+    &:hover {
+      background-color: #d9dbff;
+    }
+    &__btn {
+      padding: 0.5em 0.7em;
+      & > * {
+        padding: 0px 2px;
+      }
+    }
+  }
 }
