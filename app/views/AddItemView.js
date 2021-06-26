@@ -21,6 +21,11 @@ var AddItemView = Marionette.View.extend({
     "click @ui.addTaskBtn": "showInputField",
     "focusout @ui.inputArea": "onFocusOut",
     "keydown @ui.inputArea": "onPressEnter",
+    "mouseup @ui.addTaskBtn":"preventDefault",
+  },
+  preventDefault(e){
+    console.log(e);
+    e.preventDefault();
   },
   showInputField() {
     console.log("add btn clicked");

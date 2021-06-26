@@ -9,6 +9,7 @@ var prevInputInputValue;
 var isEnterPressed = false;
 
 var TaskItemView = Marionette.View.extend({
+  className:"kanban-card__body__task",
   template: template,
   ui: {
     deleteOption: ".kanban-card__body__task__option",
@@ -18,6 +19,7 @@ var TaskItemView = Marionette.View.extend({
   },
   triggers: {
     "click @ui.deleteOption": "destroy:task",
+    
     // "focusout @ui.inputArea": "destroy:empty",
     // "keydown @ui.inputArea": "destroy:empty",
   },
@@ -26,7 +28,12 @@ var TaskItemView = Marionette.View.extend({
     "click @ui.taskTitle": "showInputField",
     "focusout @ui.inputArea": "onFocusOut",
     "keydown @ui.inputArea": "onPressEnter",
+    // "mouseup":"preventDefault",
   },
+  // preventDefault(e){
+  //   console.log(e);
+  //   e.preventDefault();
+  // },
   destroyTask() {
     // TODO : DESTROY NEWLY ADDED TASK ERROR
     // console.log("destroy task clicked id", this.model.toJSON().id);
@@ -56,9 +63,9 @@ var TaskItemView = Marionette.View.extend({
 
     // show with text on click
     this.$(".kanban-card__body__task__title-input").toggleClass("hide");
+    this.$(".kanban-card__body__task__title-input__field").focus();
     this.$(".kanban-card__body__task__title-input__field").val(task);
 
-    this.$(".kanban-card__body__task__title-input__field").focus();
   },
   saveTask(taskTitle) {
     // save Task Must trigger so that the model is added to the collection
@@ -66,7 +73,6 @@ var TaskItemView = Marionette.View.extend({
     this.model.set("modified_at", TimeStamp());
 
     if (this.model) {
-      // this.model.colId=
       this.model.save(
         {},
         {
@@ -75,16 +81,11 @@ var TaskItemView = Marionette.View.extend({
             // on success make the change in task collection and rerender Task Collection
             variables.tasksCollection.push(this.model);
             // re render the parent
+            this.trigger("render:task");
           },
         }
       );
-    } else {
-      // this.model.save({
-      //   success: function () {
-      //     console.log("task saved with new title value :", taskTitle);
-      //   },
-      // });
-    }
+    } 
   },
   getInputValue() {
     let inputValue = this.$(
@@ -132,6 +133,7 @@ var TaskItemView = Marionette.View.extend({
   },
   initialize(options) {},
   onRender() {
+    console.log("!!!!!TASK ITEM VIEW ON RENDER!!!!!")
     if (this.options && this.options.inputFocus) {
       // console.log("options.focusInput on RENder:", this.options.inputFocus);
       this.showInputField();

@@ -1,21 +1,26 @@
 <!-- <div class="kanban-card"> -->
-  <div class="kanban-card__header">
-    <span class="kanban-card__header__title">
-      <%= name %>
-      <!-- on click shows an input area with the title editable -->
-    </span>
-    <span class="kanban-card__header__options">
-      <i class="fas fa-ellipsis-h"></i>
-      <!-- on click options -->
-      <!-- remove , edit , cancel and add -->
-    </span>
-  </div>
-  <div class="kanban-card__body">
-      <!-- here goes the single tasks of the column -->
-  </div>
-  <div class="kanban-card__footer">
-      <!-- here goes add tasks of the column -->
-  </div>
+<div class="kanban-card__header">
+  <span class="kanban-card__header__title">
+    <%= name %>
+  </span>  
+  <span class="kanban-card__header__title__input hide">
+    <textarea
+      type="text"
+      class="kanban-card__header__title__input__field"
+      autofocus
+      placeholder="Enter list title..."
+    ></textarea>
+  </span>
+  <span class="kanban-card__header__options">
+    <i class="fas fa-ellipsis-h"></i>
+    <!-- on click options -->
+    <!-- remove , edit , cancel and add -->
+  </span>
+</div>
+<div class="kanban-card__body">
+  <!-- here goes the single tasks of the column -->
+</div>
+<!-- <div class="kanban-card__footer"></div> -->
+<!-- here goes add tasks of the column -->
 
 <!-- </div> -->
-
