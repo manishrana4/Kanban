@@ -47,7 +47,7 @@ var TaskItemView = Marionette.View.extend({
     //  event.originalEvent.dataTransfer.effectAllowed = "copy";
     event.dataTransfer.effectAllowed = "all";
     event.dataTransfer.dropEffect = "move";
-    event.dataTransfer.setData("text/plain", 1);
+    event.dataTransfer.setData("text/plain", "1");
 
     console.log("this.model from task ITEM", this.model);
     console.log("form task item event.dataTransfer", event.dataTransfer);
