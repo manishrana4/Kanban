@@ -11,9 +11,6 @@ variables.tasksCollection = new TasksCollection();
 const App = Marionette.Application.extend({
   onStart(app, options) {
     console.log("app started");
-    // var mainView = new MainView({
-    //   collection:options.columns
-    // });
     var mainView = new MainView();
     mainView.render();
   },
@@ -24,36 +21,15 @@ const app = new App();
 variables.columnsCollection.fetch({
   success: () => {
     variables.tasksCollection.fetch({
-      success:()=>{
-          // console.log("tasks loaded successfully");
-          console.log("task collection", variables.tasksCollection);
-          console.log("columnsCollection", variables.columnsCollection);
-        //   app.start({
-        //     columns: variables.columnsCollection
-        //  });
+      success: () => {
         app.start();
       },
-      error:(error)=>{
-          console.log("error in r=tasks fetch", error);
-      }
-  })
-    // app.start({
-    //    columns: variables.columnsCollection
-    // });
-    // also fetch tasks here
-    // console.log("variables.columnsCollection", variables.columnsCollection);
+      error: (error) => {
+        console.log("error in r=tasks fetch", error);
+      },
+    });
   },
   error: (error) => {
     console.log("error in collection fetch:", error);
   },
 });
-
-// variables.tasksCollection.fetch({
-//     success:()=>{
-//         // console.log("tasks loaded successfully");
-//         // console.log("task collection", variables.tasksCollection);
-//     },
-//     error:(error)=>{
-//         console.log("error in r=tasks fetch", error);
-//     }
-// })

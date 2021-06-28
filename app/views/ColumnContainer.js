@@ -8,7 +8,7 @@ import $ from "jquery";
 import template from "../templates/columnContainer.html";
 import AddColumnView from "./addColumnView";
 
-// TODO: need to add an extra childColumn for adding to list
+
 var MainContainer = Marionette.CollectionView.extend({
   childView: ColumnView,
   childViewContainer: ".board-container",
@@ -20,7 +20,7 @@ var MainContainer = Marionette.CollectionView.extend({
     "destroy:empty": "destroy:empty:child:view",
   },
   onDestroyEmptyChildView(childView) {
-    console.log("childView from onDestroyEmptyChildView", childView);
+   
     this.removeChildView(childView);
   },
   childViewEvents: {
@@ -35,25 +35,22 @@ var MainContainer = Marionette.CollectionView.extend({
     this.render();
   },
   reRenderColumns() {
-    console.log("rerender Columns trigger");
+   
     this.trigger("render:main");
   },
   removeView(childView) {
     let childViewModel = childView.model;
-    console.log("childView on remove ChildVIEW", childView);
+  
     childView.model.destroy({
       success: () => {
-        console.log("column removed  childView.model", childView.model);
-        console.log("column removed  childViewModel", childViewModel);
-        console.log("this.children.length on remove", this.children.length);
+       
 
-        variables.columnsCollection.remove(childViewModel); // remove model from local taskCollection
-        // variables.tasksCollection.remove(childViewModel); // remove model from local taskCollection
-        this.removeChildView(childView); // removes the childView
+        variables.columnsCollection.remove(childViewModel); 
+       
+        this.removeChildView(childView); 
 
         // this.render();
-        // call the column view with updated collection
-
+        
         this.trigger("column:destroyed");
         // to re-renders the column View for tasks remainng
       },
