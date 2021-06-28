@@ -27,12 +27,6 @@ var TaskItemView = Marionette.View.extend({
     // "focusout @ui.inputArea": "destroy:empty",
     // "keydown @ui.inputArea": "destroy:empty",
   },
-  modelEvents: {
-    'change:colId': 'actOnChange'
-  },
-  actOnChange() {
-    console.log("this.model.get('colId')", this.model.get('colId'));
-  },
   events: {
     // "drag @ui.thisTaskCard": "onDrag",
     "dragstart @ui.thisTaskCard": "onDragStart",
@@ -42,44 +36,32 @@ var TaskItemView = Marionette.View.extend({
     "keydown @ui.inputArea": "onPressEnter",
   },
   onDrag(event) {
-    console.log("drag event and this model:", event, this.model);
     let thisModel = this.model.toJSON();
-    // console.log("JSON.stringify.thisModel:", JSON.stringify(thisModel));
-    console.log("ON DRAG THISMODEL.ID", thisModel.id);
-    // $.event.addProp("dataTransfer");
-    // event.dataTransfer.setData("text", "hello");
-    // event.dataTransfer.effectAllowed = "copy";
-    // event.originalEvent.dataTransfer.effectAllowed = "move";
-    //  event.originalEvent.dataTransfer.effectAllowed = "copy";
-    // event.dataTransfer.effectAllowed = "all";
-    // event.dataTransfer.dropEffect = "move";
-    // event.dataTransfer.setData("text/plain", "1");
 
     event.originalEvent.dataTransfer.effectAllowed = "move";
-    event.originalEvent.dataTransfer.setData('text/plain', thisModel.id);
+    event.originalEvent.dataTransfer.setData("text/plain", thisModel.id);
 
-    console.log("this.model from task ITEM", this.model);
-    console.log("form task item event.dataTransfer", event.originalEvent.dataTransfer);
+    console.log(
+      "form task item event.dataTransfer",
+      event.originalEvent.dataTransfer
+    );
   },
   onDragStart(event) {
-    console.log("drag event started:", event);
-    console.log("drag event and this model:", event, this.model);
     let thisModel = this.model.toJSON();
-    // console.log("JSON.stringify.thisModel:", JSON.stringify(thisModel));
-    console.log("ON DRAG THISMODEL.ID", thisModel.id);
-   
 
     event.originalEvent.dataTransfer.effectAllowed = "move";
-    // event.originalEvent.dataTransfer.setData('text/plain', thisModel.id);
-    event.originalEvent.dataTransfer.setData('text/plain', JSON.stringify(thisModel));
 
-    console.log("this.model from task ITEM", this.model);
-    console.log("form task item event.dataTransfer", event.originalEvent.dataTransfer);
-    console.log("form task item event.dataTransfer", event.originalEvent.dataTransfer.getData("text/plain"));
+    event.originalEvent.dataTransfer.setData(
+      "text/plain",
+      JSON.stringify(thisModel)
+    );
+    console.log(
+      "form task item event.dataTransfer",
+      event.originalEvent.dataTransfer.getData("text/plain")
+    );
   },
   destroyTask() {
     // TODO : DESTROY NEWLY ADDED TASK ERROR
-    // console.log("destroy task clicked id", this.model.toJSON().id);
     // console.log("to be destroyed model", this.model);
     // this.model.destroy({
     //   success: function () {
@@ -94,12 +76,11 @@ var TaskItemView = Marionette.View.extend({
     prevInputInputValue = inputValue;
   },
   showInputField() {
-    // console.log("title clicked");
+   
     let task = $.trim(this.$(".kanban-card__body__task__title").html());
 
     this.setPrevInputValue(task);
 
-    // console.log("task", task);
     // hide text on click to edit
     this.$(".kanban-card__body__task__title").toggleClass("hide");
     this.$(".kanban-card__body__task__option").toggleClass("hide");
@@ -111,22 +92,37 @@ var TaskItemView = Marionette.View.extend({
   },
   saveTask(taskTitle) {
     // save Task Must trigger so that the model is added to the collection
+    console.log("new value", taskTitle);
     this.model.set("name", taskTitle);
     this.model.set("modified_at", TimeStamp());
+    if (prevInputInputValue !== "") {
+      console.log("prevInputInputValue", prevInputInputValue);
 
-    if (this.model) {
-      this.model.save(
-        {},
-        {
-          success: () => {
-            console.log("!!!!task saved with new title value!!!!:", taskTitle);
-            // on success make the change in task collection and rerender Task Collection
-            variables.tasksCollection.push(this.model);
-            // re render the parent
-            this.trigger("render:task");
-          },
-        }
-      );
+      let thisModel = variables.tasksCollection.findWhere("id", this.model.id);
+      thisModel.set("name", taskTitle);
+      thisModel.set("modified_at", TimeStamp());
+      this.model.save({}, { success: () => {}, error: () => {} });
+    } else {
+      // if there is no id of same in variables.taskCollection push to varibales
+      if (this.model) {
+        this.model.save(
+          {},
+          {
+            success: () => {
+              console.log(
+                "!!!!task saved with new title value!!!!:",
+                taskTitle
+              );
+              // on success make the change in task collection and rerender Task Collection
+              variables.tasksCollection.push(this.model); //this is for new add
+
+              // for edit
+              // re render the parent
+              this.trigger("render:task");
+            },
+          }
+        );
+      }
     }
   },
   getInputValue() {
@@ -175,7 +171,6 @@ var TaskItemView = Marionette.View.extend({
   },
   initialize(options) {},
   onRender() {
-    console.log("!!!!!TASK ITEM VIEW ON RENDER!!!!!");
     if (this.options && this.options.inputFocus) {
       this.showInputField();
     }

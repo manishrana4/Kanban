@@ -27,23 +27,6 @@ var ColumnView = Marionette.View.extend({
   triggers: {
     "click @ui.deleteOption": "destroy:column",
   },
-  modelEvents: {
-    "change:colId": "actOnChange",
-  },
-  actOnChange() {
-    console.log("change:colId");
-  },
-  collectionEvents: {
-    // "taskDragAndDrop": 'taskDragAndDrop'
-    sync: "onSync",
-    update: "onCollectionUpdate",
-  },
-  onCollectionUpdate() {
-    console.log("models were added or removed in the collection");
-  },
-  onSync(collection) {
-    console.log("Collection was synchronised with the server");
-  },
   events: {
     "drop @ui.thisColumn": "onDrop",
     "dragover @ui.thisColumn": "onDragOverAllowDrop",
@@ -57,19 +40,11 @@ var ColumnView = Marionette.View.extend({
   },
   onDrop(ev) {
     ev.preventDefault();
-    console.log("on drop ev", ev);
-    console.log("on drop ev", ev.currentTarget);
+   
     // $.event.addProp('dataTransfer');
     var data = ev.originalEvent.dataTransfer.getData("text/plain");
     var modelData = JSON.parse(data);
-    console.log("JSON parsed data model Data", modelData);
-    // ev.target.appendChild(document.getElementById(data));
-    console.log("on Drop to COLUMN", ev);
-    console.log("on Drop to COLUMN data", data);
-    console.log(
-      "on Drop to COLUMN ev.dataTransfer.getData('text):",
-      ev.originalEvent.dataTransfer
-    );
+   
 
     // change colId and re render old col and new col
     if (this.model.id !== modelData.colId) {
@@ -83,24 +58,18 @@ var ColumnView = Marionette.View.extend({
     let prevColId = modelData.colId;
     draggedTaskModel.set("colId", this.model.id);
 
-    console.log("draggedTaskModel:", draggedTaskModel);
-
     draggedTaskModel.save(
       {},
       {
         success: () => {
-          console.log("task drag and drop done", draggedTaskModel);
+        
           this.reRenderView();
-          //until model and collection event in setup for rerender'
 
           variables.tasksCollection
             .findWhere({ id: modelData.id })
             .set("colId", this.model.id);
 
-          // trigger and pass col ID of prev and presend col an rerender
-          console.log("prevColId", prevColId);
           this.trigger("render:column");
-
         },
         error: (err) => {
           console.log("error in task drag and drop:", err);
@@ -109,30 +78,9 @@ var ColumnView = Marionette.View.extend({
     );
   },
   destroyColumn() {
-    // this needs to change
-    // console.log("destroy task clicked id", this.model.toJSON().id);
-    // console.log("to be destroyed model", this.model);
-    // this.model.destroy({
-    //   success: function () {
-    //     console.log("column removed");
-    //     // destroy all the task with its colId
-    //   },
-    //   error: function () {
-    //     console.log("error removing column");
-    //   },
-    // });
-
-    // trigger remove child in parent
-    // Remove its childs models
-
-    console.log(this.model);
 
     const taskCollectionView = this.getChildView("taskContainer");
-    // console.log("!!!!!!!taskCollectionView!!!!!!!!!!!", taskCollectionView);
-    console.log(
-      "!!!!!!!taskCollectionViewMODELS!!!!!!!!!!!",
-      taskCollectionView.collection.models
-    );
+    
     let childModels = taskCollectionView.collection.models;
     this.destroyChildTaskModels(childModels); //remove the children in db
   },
@@ -191,8 +139,7 @@ var ColumnView = Marionette.View.extend({
     }
   },
   saveColumn(title) {
-    // save title Must trigger so that the model is added to the collection
-    // console.log("this model inSave column task", this.model)
+    
     this.model.set("name", title);
     this.model.set("modified_at", TimeStamp());
 
@@ -201,8 +148,7 @@ var ColumnView = Marionette.View.extend({
         {},
         {
           success: () => {
-            console.log("!!!!Column saved with new title value!!!!:", title);
-            console.log("!!!!Column saved with this model ::!!!!:", this.model);
+           
             // on success make the change in task collection and rerender Task Collection
             variables.columnsCollection.push(this.model);
             // re render the parent
@@ -224,16 +170,15 @@ var ColumnView = Marionette.View.extend({
     "render:task": "reRenderView",
   },
   reRenderView() {
-    // console.log("!!!!!this.reRenderView!!!!!");
     this.render();
   },
   showInputField() {
-    // // console.log("title clicked");
+    
     let title = $.trim(this.$(".kanban-card__header__title").html());
 
     this.setPrevInputValue(title);
 
-    // // console.log("title", title);
+   
     // // hide text on click to edit
     this.$(".kanban-card__header__title").toggleClass("hide");
     this.$(".kanban-card__header__options").toggleClass("hide");
@@ -247,11 +192,10 @@ var ColumnView = Marionette.View.extend({
     console.log("Column View Initialized");
   },
   onRender() {
-    console.log("!!!!COLUMN VIEW ON RENDER!!!");
     let thisModel = this.model;
 
     let thisColumnsTasks = new TasksCollection();
-    // TODO: trigger Collection event
+    
     let thisColumnsTasksArray = variables.tasksCollection.where({
       colId: thisModel.id,
     });
@@ -259,7 +203,7 @@ var ColumnView = Marionette.View.extend({
     thisColumnsTasksArray.forEach((task) => {
       thisColumnsTasks.add(new TaskModel({ ...task.toJSON() }));
     });
-
+    
     this.showChildView(
       "taskContainer",
       new TaskContainer({
@@ -268,9 +212,7 @@ var ColumnView = Marionette.View.extend({
       })
     );
 
-    // Focus on Input of newly rendered Column View
     if (this.options && this.options.inputFocus) {
-      // console.log("options.focusInput on RENder:", this.options.inputFocus);
       this.showInputField();
     }
   },
