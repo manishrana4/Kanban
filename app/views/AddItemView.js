@@ -4,8 +4,6 @@ import TimeStamp from "../services/timeStamp";
 import $ from "jquery";
 import template from "../templates/addItem.html";
 
-
-
 var AddItemView = Marionette.View.extend({
   template: template,
   ui: {
@@ -15,31 +13,19 @@ var AddItemView = Marionette.View.extend({
     inputField: ".kanban-card__body__task__add__input__field",
   },
   triggers: {
-    'click @ui.addTaskBtn': 'add:task'
+    "click @ui.addTaskBtn": "add:task",
   },
   events: {
     "click @ui.addTaskBtn": "showInputField",
     "focusout @ui.inputArea": "onFocusOut",
     "keydown @ui.inputArea": "onPressEnter",
-    "mouseup @ui.addTaskBtn":"preventDefault",
+    "mouseup @ui.addTaskBtn": "preventDefault",
   },
-  preventDefault(e){
+  preventDefault(e) {
     console.log(e);
     e.preventDefault();
   },
-  showInputField() {
-    console.log("add btn clicked");
-    // const $inputField=this.getUI('inputField');
-    // const $inputWrapper=this.getUI('inputWrapper');
-    // const $addTaskBtn=this.getUI('addTaskBtn');
-
-    // $addTaskBtn.toggleClass('hide');
-    // $inputWrapper.toggleClass('hide');
-
-    // just disable the click until its clicked outside or enter or just hide until the new task added
-
-  }
-
+  showInputField() {},
 });
 
 export default AddItemView;
