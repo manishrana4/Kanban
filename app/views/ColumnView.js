@@ -12,12 +12,13 @@ var prevInputInputValue;
 var isEnterPressed = false;
 
 var ColumnView = Marionette.View.extend({
-  className: "kanban-card",
+  // className: "kanban-card",
   regions: {
     taskContainer: ".kanban-card__body",
   },
   template: template,
   ui: {
+    thisColumn: ".kanban-card",
     deleteOption: ".kanban-card__header__options",
     columnTitle: ".kanban-card__header__title",
     inputArea: ".kanban-card__header__title__input",
@@ -27,10 +28,26 @@ var ColumnView = Marionette.View.extend({
     "click @ui.deleteOption": "destroy:column",
   },
   events: {
+    "drop @ui.thisColumn": "onDrop",
+    "dragover @ui.thisColumn":"onDragOverAllowDrop",
     "click @ui.deleteOption": "destroyColumn",
     "click @ui.columnTitle": "showInputField",
     "focusout @ui.inputArea": "onFocusOut",
     "keydown @ui.inputArea": "onPressEnter",
+  },
+  onDragOverAllowDrop(event){  
+    event.preventDefault();
+    console.log("on drageover allow drop ", event);
+    console.log("on drageover allow drop ", event.dataTransfer);
+  },
+  onDrop(ev) {
+    ev.preventDefault();
+    // $.event.addProp('dataTransfer');
+    var modelData = ev.dataTransfer.getData("text/plain");
+    // ev.target.appendChild(document.getElementById(data));
+    console.log("on Drop to COLUMN", ev);
+    console.log("on Drop to COLUMN data", modelData);
+    console.log("on Drop to COLUMN ev.dataTransfer.getData('text):", ev.dataTransfer);
   },
   destroyColumn() {
     // this needs to change
@@ -175,7 +192,7 @@ var ColumnView = Marionette.View.extend({
     let thisModel = this.model;
 
     let thisColumnsTasks = new TasksCollection();
-
+    // TODO: trigger Collection event
     let thisColumnsTasksArray = variables.tasksCollection.where({
       colId: thisModel.id,
     });
