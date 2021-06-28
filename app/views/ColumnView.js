@@ -27,27 +27,86 @@ var ColumnView = Marionette.View.extend({
   triggers: {
     "click @ui.deleteOption": "destroy:column",
   },
+  modelEvents: {
+    "change:colId": "actOnChange",
+  },
+  actOnChange() {
+    console.log("change:colId");
+  },
+  collectionEvents: {
+    // "taskDragAndDrop": 'taskDragAndDrop'
+    sync: "onSync",
+    update: "onCollectionUpdate",
+  },
+  onCollectionUpdate() {
+    console.log("models were added or removed in the collection");
+  },
+  onSync(collection) {
+    console.log("Collection was synchronised with the server");
+  },
   events: {
     "drop @ui.thisColumn": "onDrop",
-    "dragover @ui.thisColumn":"onDragOverAllowDrop",
+    "dragover @ui.thisColumn": "onDragOverAllowDrop",
     "click @ui.deleteOption": "destroyColumn",
     "click @ui.columnTitle": "showInputField",
     "focusout @ui.inputArea": "onFocusOut",
     "keydown @ui.inputArea": "onPressEnter",
   },
-  onDragOverAllowDrop(event){  
+  onDragOverAllowDrop(event) {
     event.preventDefault();
-    console.log("on drageover allow drop ", event);
-    console.log("on drageover allow drop ", event.dataTransfer);
   },
   onDrop(ev) {
     ev.preventDefault();
+    console.log("on drop ev", ev);
+    console.log("on drop ev", ev.currentTarget);
     // $.event.addProp('dataTransfer');
-    var modelData = ev.dataTransfer.getData("text/plain");
+    var data = ev.originalEvent.dataTransfer.getData("text/plain");
+    var modelData = JSON.parse(data);
+    console.log("JSON parsed data model Data", modelData);
     // ev.target.appendChild(document.getElementById(data));
     console.log("on Drop to COLUMN", ev);
-    console.log("on Drop to COLUMN data", modelData);
-    console.log("on Drop to COLUMN ev.dataTransfer.getData('text):", ev.dataTransfer);
+    console.log("on Drop to COLUMN data", data);
+    console.log(
+      "on Drop to COLUMN ev.dataTransfer.getData('text):",
+      ev.originalEvent.dataTransfer
+    );
+
+    // change colId and re render old col and new col
+    if (this.model.id !== modelData.colId) {
+      this.onTaskDragAndDrop(modelData);
+    }
+  },
+  onTaskDragAndDrop(modelData) {
+    let draggedTaskModel = variables.tasksCollection.findWhere({
+      id: modelData.id,
+    });
+    let prevColId = modelData.colId;
+    draggedTaskModel.set("colId", this.model.id);
+
+    console.log("draggedTaskModel:", draggedTaskModel);
+
+    draggedTaskModel.save(
+      {},
+      {
+        success: () => {
+          console.log("task drag and drop done", draggedTaskModel);
+          this.reRenderView();
+          //until model and collection event in setup for rerender'
+
+          variables.tasksCollection
+            .findWhere({ id: modelData.id })
+            .set("colId", this.model.id);
+
+          // trigger and pass col ID of prev and presend col an rerender
+          console.log("prevColId", prevColId);
+          this.trigger("render:column");
+
+        },
+        error: (err) => {
+          console.log("error in task drag and drop:", err);
+        },
+      }
+    );
   },
   destroyColumn() {
     // this needs to change
