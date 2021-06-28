@@ -9,9 +9,13 @@ var prevInputInputValue;
 var isEnterPressed = false;
 
 var TaskItemView = Marionette.View.extend({
-  className:"kanban-card__body__task",
+  // className: "kanban-card__body__task",
+  attributes: {
+    // draggable: "true",
+  },
   template: template,
   ui: {
+    thisTaskCard: ".kanban-card__body__task",
     deleteOption: ".kanban-card__body__task__option",
     taskTitle: ".kanban-card__body__task__title",
     inputArea: ".kanban-card__body__task__title-input",
@@ -19,21 +23,38 @@ var TaskItemView = Marionette.View.extend({
   },
   triggers: {
     "click @ui.deleteOption": "destroy:task",
-    
+
     // "focusout @ui.inputArea": "destroy:empty",
     // "keydown @ui.inputArea": "destroy:empty",
   },
   events: {
+    "drag @ui.thisTaskCard": "onDrag",
+    "dragStart @ui.thisTaskCard": "onDragStart",
     "click @ui.deleteOption": "destroyTask",
     "click @ui.taskTitle": "showInputField",
     "focusout @ui.inputArea": "onFocusOut",
     "keydown @ui.inputArea": "onPressEnter",
-    // "mouseup":"preventDefault",
   },
-  // preventDefault(e){
-  //   console.log(e);
-  //   e.preventDefault();
-  // },
+  onDrag(event) {
+    console.log("drag event and this model:", event, this.model);
+    let thisModel = this.model.toJSON();
+    // console.log("JSON.stringify.thisModel:", JSON.stringify(thisModel));
+    console.log("ON DRAG THISMODEL.ID", thisModel.id);
+    $.event.addProp("dataTransfer");
+    // event.dataTransfer.setData("text", "hello");
+    // event.dataTransfer.effectAllowed = "copy";
+    // event.originalEvent.dataTransfer.effectAllowed = "move";
+    //  event.originalEvent.dataTransfer.effectAllowed = "copy";
+    event.dataTransfer.effectAllowed = "all";
+    event.dataTransfer.dropEffect = "move";
+    event.dataTransfer.setData("text/plain", 1);
+
+    console.log("this.model from task ITEM", this.model);
+    console.log("form task item event.dataTransfer", event.dataTransfer);
+  },
+  onDragStart(event) {
+    console.log("drag event started:", event);
+  },
   destroyTask() {
     // TODO : DESTROY NEWLY ADDED TASK ERROR
     // console.log("destroy task clicked id", this.model.toJSON().id);
@@ -65,7 +86,6 @@ var TaskItemView = Marionette.View.extend({
     this.$(".kanban-card__body__task__title-input").toggleClass("hide");
     this.$(".kanban-card__body__task__title-input__field").focus();
     this.$(".kanban-card__body__task__title-input__field").val(task);
-
   },
   saveTask(taskTitle) {
     // save Task Must trigger so that the model is added to the collection
@@ -85,7 +105,7 @@ var TaskItemView = Marionette.View.extend({
           },
         }
       );
-    } 
+    }
   },
   getInputValue() {
     let inputValue = this.$(
@@ -133,9 +153,8 @@ var TaskItemView = Marionette.View.extend({
   },
   initialize(options) {},
   onRender() {
-    console.log("!!!!!TASK ITEM VIEW ON RENDER!!!!!")
+    console.log("!!!!!TASK ITEM VIEW ON RENDER!!!!!");
     if (this.options && this.options.inputFocus) {
-      // console.log("options.focusInput on RENder:", this.options.inputFocus);
       this.showInputField();
     }
   },
