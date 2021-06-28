@@ -27,9 +27,15 @@ var TaskItemView = Marionette.View.extend({
     // "focusout @ui.inputArea": "destroy:empty",
     // "keydown @ui.inputArea": "destroy:empty",
   },
+  modelEvents: {
+    'change:colId': 'actOnChange'
+  },
+  actOnChange() {
+    console.log("this.model.get('colId')", this.model.get('colId'));
+  },
   events: {
-    "drag @ui.thisTaskCard": "onDrag",
-    "dragStart @ui.thisTaskCard": "onDragStart",
+    // "drag @ui.thisTaskCard": "onDrag",
+    "dragstart @ui.thisTaskCard": "onDragStart",
     "click @ui.deleteOption": "destroyTask",
     "click @ui.taskTitle": "showInputField",
     "focusout @ui.inputArea": "onFocusOut",
@@ -40,20 +46,36 @@ var TaskItemView = Marionette.View.extend({
     let thisModel = this.model.toJSON();
     // console.log("JSON.stringify.thisModel:", JSON.stringify(thisModel));
     console.log("ON DRAG THISMODEL.ID", thisModel.id);
-    $.event.addProp("dataTransfer");
+    // $.event.addProp("dataTransfer");
     // event.dataTransfer.setData("text", "hello");
     // event.dataTransfer.effectAllowed = "copy";
     // event.originalEvent.dataTransfer.effectAllowed = "move";
     //  event.originalEvent.dataTransfer.effectAllowed = "copy";
-    event.dataTransfer.effectAllowed = "all";
-    event.dataTransfer.dropEffect = "move";
-    event.dataTransfer.setData("text/plain", "1");
+    // event.dataTransfer.effectAllowed = "all";
+    // event.dataTransfer.dropEffect = "move";
+    // event.dataTransfer.setData("text/plain", "1");
+
+    event.originalEvent.dataTransfer.effectAllowed = "move";
+    event.originalEvent.dataTransfer.setData('text/plain', thisModel.id);
 
     console.log("this.model from task ITEM", this.model);
-    console.log("form task item event.dataTransfer", event.dataTransfer);
+    console.log("form task item event.dataTransfer", event.originalEvent.dataTransfer);
   },
   onDragStart(event) {
     console.log("drag event started:", event);
+    console.log("drag event and this model:", event, this.model);
+    let thisModel = this.model.toJSON();
+    // console.log("JSON.stringify.thisModel:", JSON.stringify(thisModel));
+    console.log("ON DRAG THISMODEL.ID", thisModel.id);
+   
+
+    event.originalEvent.dataTransfer.effectAllowed = "move";
+    // event.originalEvent.dataTransfer.setData('text/plain', thisModel.id);
+    event.originalEvent.dataTransfer.setData('text/plain', JSON.stringify(thisModel));
+
+    console.log("this.model from task ITEM", this.model);
+    console.log("form task item event.dataTransfer", event.originalEvent.dataTransfer);
+    console.log("form task item event.dataTransfer", event.originalEvent.dataTransfer.getData("text/plain"));
   },
   destroyTask() {
     // TODO : DESTROY NEWLY ADDED TASK ERROR
