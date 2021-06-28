@@ -247,7 +247,7 @@ var ColumnView = Marionette.View.extend({
     console.log("Column View Initialized");
   },
   onRender() {
-    console.log("!!!!COLUMN VIEW ON RENDER!!!");
+   
     let thisModel = this.model;
 
     let thisColumnsTasks = new TasksCollection();
@@ -259,7 +259,8 @@ var ColumnView = Marionette.View.extend({
     thisColumnsTasksArray.forEach((task) => {
       thisColumnsTasks.add(new TaskModel({ ...task.toJSON() }));
     });
-
+    console.log("thisColumnsTasksArray",thisColumnsTasksArray);
+    console.log("thisColumnsTasksArray",variables.tasksCollection);
     this.showChildView(
       "taskContainer",
       new TaskContainer({
@@ -268,9 +269,8 @@ var ColumnView = Marionette.View.extend({
       })
     );
 
-    // Focus on Input of newly rendered Column View
+    
     if (this.options && this.options.inputFocus) {
-      // console.log("options.focusInput on RENder:", this.options.inputFocus);
       this.showInputField();
     }
   },

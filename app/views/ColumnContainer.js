@@ -64,7 +64,7 @@ var MainContainer = Marionette.CollectionView.extend({
   },
   addNewColumn(childView) {
     let columnCreateDate = TimeStamp();
-
+    console.log("add new COLUMN")
     let newColumnModel = new ColumnModel({
       created_at: columnCreateDate,
     });
@@ -74,12 +74,8 @@ var MainContainer = Marionette.CollectionView.extend({
     });
     this.addChildView(columnView, this.children.length - 1);
   },
-  initialize() {
-    // TODO: need to add an extra childColumn for adding to list
-  },
+  initialize() {},
   onRender() {
-    // TODO: need to add an extra childColumn for adding to list
-
     let addColumnView = new AddColumnView();
     this.addChildView(addColumnView, this.children.length);
   },

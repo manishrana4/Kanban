@@ -11,6 +11,11 @@
     color: $text-light;
     padding: 0.5em 1em;
     border-radius: 5px 5px 0px 0px;
+    &:hover &{
+      &__options{
+        visibility: visible;
+      }
+    }
     &__title {
       font-size: $font-m;
       width: 90%;
@@ -29,6 +34,12 @@
         }
       }
     }
+    &__options{
+      visibility: hidden;
+      width: 10%;
+      text-align: center;
+    }
+
   }
 
   &__body {
@@ -108,7 +119,7 @@
         visibility: hidden;
         width: 10%;
         text-align: center;
-        transform: visibility 2s;
+        
       }
     }
   }
