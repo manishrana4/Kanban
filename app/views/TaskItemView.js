@@ -2,7 +2,8 @@ import Marionette from "backbone.marionette";
 import variables from "../services/variables";
 import TaskModel from "../models/task";
 import TimeStamp from "../services/timeStamp";
-import $ from "jquery";
+import { v4 as uuidv4 } from "uuid";
+import $, { each } from "jquery";
 import template from "../templates/taskItem.html";
 
 var prevInputInputValue;
@@ -22,8 +23,7 @@ var TaskItemView = Marionette.View.extend({
     inputField: ".kanban-card__body__task__title-input__input",
   },
   triggers: {
-    "click @ui.deleteOption": "destroy:task",
-
+    // "click @ui.deleteOption": "destroy:task",
     // "focusout @ui.inputArea": "destroy:empty",
     // "keydown @ui.inputArea": "destroy:empty",
   },
@@ -35,17 +35,17 @@ var TaskItemView = Marionette.View.extend({
     "focusout @ui.inputArea": "onFocusOut",
     "keydown @ui.inputArea": "onPressEnter",
   },
-  onDrag(event) {
-    let thisModel = this.model.toJSON();
+  // onDrag(event) {
+  //   let thisModel = this.model.toJSON();
 
-    event.originalEvent.dataTransfer.effectAllowed = "move";
-    event.originalEvent.dataTransfer.setData("text/plain", thisModel.id);
+  //   event.originalEvent.dataTransfer.effectAllowed = "move";
+  //   event.originalEvent.dataTransfer.setData("text/plain", thisModel.id);
 
-    console.log(
-      "form task item event.dataTransfer",
-      event.originalEvent.dataTransfer
-    );
-  },
+  //   console.log(
+  //     "form task item event.dataTransfer",
+  //     event.originalEvent.dataTransfer
+  //   );
+  // },
   onDragStart(event) {
     let thisModel = this.model.toJSON();
 
@@ -62,21 +62,25 @@ var TaskItemView = Marionette.View.extend({
   },
   destroyTask() {
     // TODO : DESTROY NEWLY ADDED TASK ERROR
-    // console.log("to be destroyed model", this.model);
-    // this.model.destroy({
-    //   success: function () {
-    //     console.log("task removed");
-    //   },
-    //   error: function () {
-    //     console.log("error removing task");
-    //   },
-    // });
+    console.log("to be destroyed model", this.model);
+    this.model.destroy({
+      success: (model) => {
+        console.log("task removed");
+        // trigger task container re render
+        variables.tasksCollection.remove(model); // remove model from local taskCollection
+        // this.destroy();
+        
+        this.trigger("destroy:task");
+      },
+      error: () => {
+        console.log("error removing task");
+      },
+    });
   },
   setPrevInputValue(inputValue) {
     prevInputInputValue = inputValue;
   },
   showInputField() {
-   
     let task = $.trim(this.$(".kanban-card__body__task__title").html());
 
     this.setPrevInputValue(task);
@@ -91,19 +95,66 @@ var TaskItemView = Marionette.View.extend({
     this.$(".kanban-card__body__task__title-input__field").val(task);
   },
   saveTask(taskTitle) {
-    // save Task Must trigger so that the model is added to the collection
-    console.log("new value", taskTitle);
+    console.log("NEW TASK TITLLE (saveTask):", taskTitle);
+    console.log("this.model (saveTask):", this.model.get("taskId"));
+    console.log("this.model (saveTask):", this.model.toJSON());
+
+    let thisModelTaskId = this.model.get("taskId");
     this.model.set("name", taskTitle);
     this.model.set("modified_at", TimeStamp());
+
     if (prevInputInputValue !== "") {
+      // UPDATE PREVIOUS TASK SECTION
+      console.log("UPDATE PREVIOUS TASK SECTION");
       console.log("prevInputInputValue", prevInputInputValue);
 
-      let thisModel = variables.tasksCollection.findWhere("id", this.model.id);
-      thisModel.set("name", taskTitle);
-      thisModel.set("modified_at", TimeStamp());
-      this.model.save({}, { success: () => {}, error: () => {} });
+      this.model.save(
+        {},
+        {
+          success: () => {
+            // change id to taskId since for each Col there is duplicate id but not taskId
+            console.log(
+              "variables.tasksCollection findWhere taskId this.model.taskId",
+              variables.tasksCollection.findWhere({ taskId: thisModelTaskId })
+            );
+            variables.tasksCollection
+              .findWhere({ taskId: thisModelTaskId })
+              .set("name", taskTitle);
+            variables.tasksCollection
+              .findWhere({ taskId: thisModelTaskId })
+              .set("modified_at", TimeStamp());
+
+            console.log("variables.tasksCollection", variables.tasksCollection);
+            variables.tasksCollection.forEach((task) => {
+              console.log(
+                `variables.tasksCollection id: ${task.id}: `,
+                task.toJSON()
+              );
+            });
+
+            console.log(
+              "this.model.save-> success-> variables.tasksCollection.findWhere('id', this.model.id):",
+              variables.tasksCollection
+                .findWhere({ taskId: thisModelTaskId })
+                .toJSON()
+            );
+            console.log("variables.tasksCollection", variables.tasksCollection);
+
+            this.trigger("render:task");
+          },
+          error: () => {},
+        }
+      );
     } else {
-      // if there is no id of same in variables.taskCollection push to varibales
+      // ADD NEW TASK SECTION
+      console.log("Create new TASK SECTION");
+      console.log("this.model", this.model);
+      console.log("this.model uuidv4", uuidv4());
+
+      this.model.set("taskId", uuidv4());
+      // BUG: The Json-server deletes all the task on one task delete because taskId is
+      // not related to any other table
+
       if (this.model) {
         this.model.save(
           {},
@@ -169,8 +220,18 @@ var TaskItemView = Marionette.View.extend({
       this.trigger("destroy:empty", this);
     }
   },
-  initialize(options) {},
+  initialize(options) {
+    console.log(
+      "variables.tasksCollection on initialisation TASK ITEM VIEW",
+      variables.tasksCollection
+    );
+  },
   onRender() {
+    console.log(
+      "variables.tasksCollection onRender TASK ITEM VIEW",
+      variables.tasksCollection
+    );
+
     if (this.options && this.options.inputFocus) {
       this.showInputField();
     }

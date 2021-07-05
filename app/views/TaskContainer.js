@@ -11,6 +11,7 @@ var TaskContainer = Marionette.CollectionView.extend({
   childView: TaskItemView,
   childViewTriggers: {
     "destroy:empty": "destroy:empty:child:view",
+    "destroy:task": "destroy:task:child:view",
   },
   onDestroyEmptyChildView(childView) {
     console.log("childView from onDestroyEmptyChildView", childView);
@@ -18,7 +19,7 @@ var TaskContainer = Marionette.CollectionView.extend({
   },
   childViewEvents: {
     "add:task": "addNewTask", // add new html
-    "destroy:task": "removeView",
+    // "destroy:task": "removeView",
     "render:task": "renderTasks",
     render() {
       console.log("A child view has been rendered.");
@@ -27,22 +28,27 @@ var TaskContainer = Marionette.CollectionView.extend({
   renderTasks() {
     this.trigger("render:task");
   },
-  removeView(childView) {
-    let childViewModel = childView.model;
-    childView.model.destroy({
-      success: () => {
-        variables.tasksCollection.remove(childViewModel); // remove model from local taskCollection
-        this.removeChildView(childView); // removes the childView
+  onDestroyTaskChildView(childView) {
+    // let childViewModel = childView.model;
+    // console.log("childView, childViewModel to be destroyed", childView, childViewModel)
+
+    // childView.model.destroy({
+    //   success: (model, response) => {
+    //     console.log("destroy success model response",model, response);
+        // variables.tasksCollection.remove(childViewModel); // remove model from local taskCollection
+        // this.removeChildView(childView); // removes the childView
+
+        console.log("variables.taskCollection on childView destroy", variables.tasksCollection);
 
         // this.render();
 
         this.trigger("task:destroyed");
         // to re-renders the column View for tasks remainng
-      },
-      error: function () {
-        console.log("error removing task");
-      },
-    });
+    //   },
+    //   error: function () {
+    //     console.log("error removing task");
+    //   },
+    // });
   },
   addNewTask(childView) {
     let taskCreateDate = TimeStamp();
@@ -63,7 +69,7 @@ var TaskContainer = Marionette.CollectionView.extend({
   onRender() {
     let addItemView = new AddItemView();
     this.addChildView(addItemView, this.children.length);
-    console.log("Task Container onRender");
+    // console.log("Task Container onRender");
     
   },
 });
