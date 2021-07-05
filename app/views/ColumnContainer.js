@@ -39,25 +39,26 @@ var MainContainer = Marionette.CollectionView.extend({
     this.trigger("render:main");
   },
   removeView(childView) {
-    let childViewModel = childView.model;
-  
-    childView.model.destroy({
-      success: () => {
+    // let childViewModel = childView.model;
+    // console.log("ChildView remove ColumnContainer ", childView);
+    // // console.log("ChildView remove ColumnContainer", childView);
+    // childView.model.destroy({
+    //   success: () => {
        
-
-        variables.columnsCollection.remove(childViewModel); 
+        // console.log("ChildView remove ColumnContainer")
+        // variables.columnsCollection.remove(childViewModel); 
        
-        this.removeChildView(childView); 
+        // this.removeChildView(childView); 
 
         // this.render();
         
         this.trigger("column:destroyed");
         // to re-renders the column View for tasks remainng
-      },
-      error: function () {
-        console.log("error removing task");
-      },
-    });
+    //   },
+    //   error: function () {
+    //     console.log("error removing task");
+    //   },
+    // });
   },
   addNewColumn(childView) {
     let columnCreateDate = TimeStamp();

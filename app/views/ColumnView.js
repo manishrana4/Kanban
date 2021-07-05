@@ -25,7 +25,7 @@ var ColumnView = Marionette.View.extend({
     inputField: ".kanban-card__header__title__input__field",
   },
   triggers: {
-    "click @ui.deleteOption": "destroy:column",
+    // "click @ui.deleteOption": "destroy:column",
   },
   events: {
     "drop @ui.thisColumn": "onDrop",
@@ -40,11 +40,10 @@ var ColumnView = Marionette.View.extend({
   },
   onDrop(ev) {
     ev.preventDefault();
-   
+
     // $.event.addProp('dataTransfer');
     var data = ev.originalEvent.dataTransfer.getData("text/plain");
     var modelData = JSON.parse(data);
-   
 
     // change colId and re render old col and new col
     if (this.model.id !== modelData.colId) {
@@ -52,9 +51,15 @@ var ColumnView = Marionette.View.extend({
     }
   },
   onTaskDragAndDrop(modelData) {
+    console.log(
+      "variables.tasksCollection on  task drag and drop",
+      variables.tasksCollection
+    );
     let draggedTaskModel = variables.tasksCollection.findWhere({
-      id: modelData.id,
+      taskId: modelData.taskId,
     });
+    console.log("modelDataon drop", modelData);
+    console.log("draggedTaskModel", draggedTaskModel);
     let prevColId = modelData.colId;
     draggedTaskModel.set("colId", this.model.id);
 
@@ -62,11 +67,10 @@ var ColumnView = Marionette.View.extend({
       {},
       {
         success: () => {
-        
           this.reRenderView();
 
           variables.tasksCollection
-            .findWhere({ id: modelData.id })
+            .findWhere({ id: modelData.id }) //TODO id or taskId??
             .set("colId", this.model.id);
 
           this.trigger("render:column");
@@ -78,24 +82,53 @@ var ColumnView = Marionette.View.extend({
     );
   },
   destroyColumn() {
-
     const taskCollectionView = this.getChildView("taskContainer");
-    
-    let childModels = taskCollectionView.collection.models;
-    this.destroyChildTaskModels(childModels); //remove the children in db
+
+    let childModels = [...taskCollectionView.collection.models];
+    // console.log("childModels in destroyColumn", childModels);
+    this.model.destroy({
+      success: (model) => {
+        console.log("model of CLOMUN destroyed", model);
+        console.log("model of CLOMUN destroyed taskCollectionView.collection.models", taskCollectionView.collection.models);
+        this.destroyChildTaskModels(childModels, taskCollectionView.collection.models); //remove the children in db
+      },
+      error: (error) => {
+        console.log("Error in delete COLUMN error", error);
+      },
+    });
   },
-  destroyChildTaskModels(childModels) {
+  destroyChildTaskModels(childModels, taskCollectionModels) {
+    // destroy this view
+    // this.model.destroy({
+    //   success: () => {
+    console.log("childModels in destroyChildTaskModels:", childModels);
     childModels.forEach((childModel) => {
+      // _.each(childModels,(childModel) => {
+      console.log("forEach childModel on destroy JSON", childModel.toJSON());
+      console.log("taskCollectionModels in loop before destroy", taskCollectionModels);
       childModel.destroy({
-        success: () => {
-          console.log("childModel removed:", childModel);
+        success: (model) => {
+          console.log("childModel removed model:", model);
+          // console.log("childModel removed:", childModel);
           variables.tasksCollection.remove(childModel);
+          console.log("childModels.length", childModels.length);
+          console.log("variables.tasksCollection on child destroy", variables.tasksCollection);
         },
-        error: (err) => {
-          console.log("error iin childmodel remove", err);
+        error: (model, response, options) => {
+          console.log("error iin childmodel remove model, response, options", model, response, options);
+          variables.tasksCollection.remove(childModel); 
+          //even though error delete from local since deleted from db too, bug cause needs to be found
         },
       });
+      console.log("taskCollectionModels in loop", taskCollectionModels);
     });
+
+    console.log(
+      "variables.tasksCollection on Column View",
+      variables.tasksCollection
+    );
+
+    this.trigger("destroy:column");
   },
   onFocusOut() {
     if (!isEnterPressed) {
@@ -139,7 +172,6 @@ var ColumnView = Marionette.View.extend({
     }
   },
   saveColumn(title) {
-    
     this.model.set("name", title);
     this.model.set("modified_at", TimeStamp());
 
@@ -148,7 +180,6 @@ var ColumnView = Marionette.View.extend({
         {},
         {
           success: () => {
-           
             // on success make the change in task collection and rerender Task Collection
             variables.columnsCollection.push(this.model);
             // re render the parent
@@ -173,12 +204,10 @@ var ColumnView = Marionette.View.extend({
     this.render();
   },
   showInputField() {
-    
     let title = $.trim(this.$(".kanban-card__header__title").html());
 
     this.setPrevInputValue(title);
 
-   
     // // hide text on click to edit
     this.$(".kanban-card__header__title").toggleClass("hide");
     this.$(".kanban-card__header__options").toggleClass("hide");
@@ -195,7 +224,7 @@ var ColumnView = Marionette.View.extend({
     let thisModel = this.model;
 
     let thisColumnsTasks = new TasksCollection();
-    
+
     let thisColumnsTasksArray = variables.tasksCollection.where({
       colId: thisModel.id,
     });
@@ -203,7 +232,9 @@ var ColumnView = Marionette.View.extend({
     thisColumnsTasksArray.forEach((task) => {
       thisColumnsTasks.add(new TaskModel({ ...task.toJSON() }));
     });
-    
+
+    console.log("thisColumnsTasks", thisColumnsTasks);
+
     this.showChildView(
       "taskContainer",
       new TaskContainer({
